@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "Syntax",
+        "repositoryURL": "https://github.com/nerdsupremacist/Syntax.git",
+        "state": {
+          "branch": "develop",
+          "revision": "c02cb089106fcd18cec022266ca23fae3de5de0b",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
