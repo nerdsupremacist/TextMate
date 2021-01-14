@@ -13,7 +13,7 @@ public enum PatternFunctionality<Pattern> {
         public let end: String
         public let endCaptures: CaptureCollection?
 
-        public let contentName: String?
+        public let contentName: Name?
         public let patterns: [Pattern]?
     }
 

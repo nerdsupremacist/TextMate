@@ -54,7 +54,7 @@ extension Dictionary where Key == String, Value == ParsedPattern {
 
         for (name, pattern) in patterns {
             guard case .some(.concrete(let concrete)) = self[name] else { continue }
-            let repository = try concrete.repository.patterns(using: language, previous: repository)
+            let repository = try concrete.repository.patterns(using: language, previous: patterns)
             pattern.functionality = try concrete.functionality.map { try $0.pattern(using: repository, language: language) }
         }
 

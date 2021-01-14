@@ -70,7 +70,7 @@ extension ParsedPattern {
         case .include(.grammar):
             return Pattern(name: nil, functionality: .grammar(language))
         case .concrete(let contrete):
-            let repository = try contrete.repository.patterns(using: language, previous: repository)
+            let repository = repository.merging(try contrete.repository.patterns(using: language, previous: repository)) { $1 }
             let pattern = Pattern(name: contrete.name, functionality: nil)
             pattern.functionality = try contrete.functionality.map { parsed in
                 let child = try parsed.pattern(using: repository, language: language)

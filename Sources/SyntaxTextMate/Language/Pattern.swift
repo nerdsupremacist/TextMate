@@ -2,6 +2,7 @@
 import Foundation
 
 public final class Pattern {
+    let id = UUID()
 	public let name: Name?
     public internal(set) var functionality: PatternFunctionality<Pattern>!
     public internal(set) weak var parent: Pattern? = nil
