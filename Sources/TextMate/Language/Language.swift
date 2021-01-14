@@ -29,7 +29,7 @@ public final class Language: Decodable {
     }
 }
 
-extension Language: Parser {
+extension Language: SyntaxTreeFactory {
     public func parse(_ text: String) throws -> SyntaxTree {
         let scanner = Scanner(text: text)
         try visit(scanner: scanner)

@@ -93,8 +93,10 @@ extension Pattern {
             for pattern in patterns {
                 try pattern.visit(scanner: scanner)
             }
+            
         case .grammar(let language):
-            fatalError()
+            try language.visit(scanner: scanner)
+
         }
     }
 
