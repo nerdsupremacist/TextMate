@@ -2,11 +2,11 @@
   "object": {
     "pins": [
       {
-        "package": "Syntax",
-        "repositoryURL": "https://github.com/nerdsupremacist/Syntax.git",
+        "package": "SyntaxTree",
+        "repositoryURL": "https://github.com/nerdsupremacist/SyntaxTree.git",
         "state": {
-          "branch": "develop",
-          "revision": "4f8eead688ce23a51fab9ecba35b825f325870a4",
+          "branch": "main",
+          "revision": "1a4a5432cdf4f57eea1c8c3802d8fe1b947e7967",
           "version": null
         }
       }

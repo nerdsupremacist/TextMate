@@ -1,5 +1,6 @@
 
 import Foundation
+import SyntaxTree
 
 public final class Language: Decodable {
     enum CodingKeys: String, CodingKey {
@@ -23,12 +24,27 @@ public final class Language: Decodable {
 
         let patterns = try container.decode([ParsedPattern].self, forKey: .patterns)
         let repository = try container.decodeIfPresent([String : ParsedPattern].self, forKey: .repository) ?? [:]
-
-
-
         let repositoryPatterns = try repository.patterns(using: self)
         self.patterns = try patterns.map { try $0.pattern(using: repositoryPatterns, language: self) }
     }
+}
+
+extension Language: Parser {
+    public func parse(_ text: String) throws -> SyntaxTree {
+        let scanner = Scanner(text: text)
+        try visit(scanner: scanner)
+        return scanner.syntaxTree()
+    }
+}
+
+extension Language {
+
+    func visit(scanner: Scanner) throws {
+        for pattern in patterns {
+            try pattern.visit(scanner: scanner)
+        }
+    }
+
 }
 
 extension Dictionary where Key == String, Value == ParsedPattern {

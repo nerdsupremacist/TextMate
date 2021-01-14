@@ -1,5 +1,5 @@
 
-import Syntax
+import SyntaxTree
 
 public struct Name: Decodable, Hashable {
     public let sections: [String]

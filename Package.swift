@@ -4,19 +4,17 @@
 import PackageDescription
 
 let package = Package(
-    name: "syntax-text-mate",
+    name: "TextMate",
     platforms: [.iOS(.v13), .macOS(.v10_15)],
     products: [
-        .library(name: "SyntaxTextMate",
-                 targets: ["SyntaxTextMate"]),
+        .library(name: "TextMate",
+                 targets: ["TextMate"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/nerdsupremacist/Syntax.git", .branch("develop")),
+        .package(url: "https://github.com/nerdsupremacist/SyntaxTree.git", .branch("main")),
     ],
     targets: [
-        .target(name: "SyntaxTextMate",
-                dependencies: ["Syntax"]),
-        .testTarget(name: "SyntaxTextMateTests",
-                    dependencies: ["SyntaxTextMate"]),
+        .target(name: "TextMate",
+                dependencies: ["SyntaxTree"]),
     ]
 )
