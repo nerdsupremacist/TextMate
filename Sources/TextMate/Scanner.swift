@@ -174,7 +174,7 @@ extension MutableSyntaxTree {
             return true
         }
 
-        var lastIndex = other.range.lowerBound
+        var lastIndex = range.lowerBound
         for childIndex in children.indices {
             let child = children[childIndex]
             if (lastIndex..<child.range.lowerBound).contains(other.range) {
