@@ -102,7 +102,7 @@ class Scanner {
         for (offset, pattern) in patterns.enumerated() {
             begin(in: storage.range)
             try pattern.visit(scanner: self)
-            let size = storage.children.first.map { $0.range.lowerBound..<storage.children.last!.range.upperBound }?.count ?? 0
+            let size = storage.children.reduce(0) { $0 + $1.matchedCharacters() }
             if largestSize < size {
                 largestSize = size
                 current = (storage, offset)
@@ -157,6 +157,18 @@ class Scanner {
         let matches = try take(expression: expression)
         guard matches.count > index else { return matches.last }
         return matches[index]
+    }
+
+}
+
+extension MutableSyntaxTree {
+
+    func matchedCharacters() -> Int {
+        if children.isEmpty {
+            return range.count
+        }
+
+        return children.reduce(0) { $0 + $1.matchedCharacters() }
     }
 
 }
