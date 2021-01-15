@@ -112,6 +112,7 @@ extension Pattern {
                 }
 
                 scanner.commit()
+                current += 1
             }
 
         case .group(let patterns):
