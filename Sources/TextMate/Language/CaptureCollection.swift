@@ -38,7 +38,7 @@ public struct CaptureCollection: Decodable, Sequence {
             do {
                 captures[key.value] = try decoder.decode(Capture.self, forKey: key)
             } catch {
-                captures[key.value] = Capture(name: String(key.value))
+                captures[key.value] = Capture(name: Name(string: String(key.value)))
             }
         }
 

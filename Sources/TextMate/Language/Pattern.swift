@@ -30,8 +30,11 @@ extension Pattern {
 
                 if let captures = matched.captures {
                     for (index, capture) in captures {
-                        if let value = match[Int(index)]?.text {
-                            scanner.annotate(key: capture.name, value: String(value))
+                        if let captured = match[Int(index)] {
+                            scanner.begin(in: captured.range)
+                            scanner.kind(capture.name.kind)
+                            scanner.annotate(key: "value", value: String(captured.text))
+                            scanner.commit()
                         }
                     }
                 }
@@ -57,16 +60,11 @@ extension Pattern {
 
                 if let beginCaptures = wrapped.beginCaptures {
                     for (index, capture) in beginCaptures {
-                        if let value = start[Int(index)]?.text {
-                            scanner.annotate(key: capture.name, value: String(value))
-                        }
-                    }
-                }
-
-                if let endCaptures = wrapped.endCaptures {
-                    for (index, capture) in endCaptures {
-                        if let value = end[Int(index)]?.text {
-                            scanner.annotate(key: capture.name, value: String(value))
+                        if let captured = start[Int(index)] {
+                            scanner.begin(in: captured.range)
+                            scanner.kind(capture.name.kind)
+                            scanner.annotate(key: "value", value: String(captured.text))
+                            scanner.commit()
                         }
                     }
                 }
@@ -86,6 +84,18 @@ extension Pattern {
                     }
                 }
 
+
+                if let endCaptures = wrapped.endCaptures {
+                    for (index, capture) in endCaptures {
+                        if let captured = end[Int(index)] {
+                            scanner.begin(in: captured.range)
+                            scanner.kind(capture.name.kind)
+                            scanner.annotate(key: "value", value: String(captured.text))
+                            scanner.commit()
+                        }
+                    }
+                }
+
                 scanner.commit()
             }
 
@@ -93,7 +103,7 @@ extension Pattern {
             for pattern in patterns {
                 try pattern.visit(scanner: scanner)
             }
-            
+
         case .grammar(let language):
             try language.visit(scanner: scanner)
 

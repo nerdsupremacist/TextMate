@@ -16,6 +16,10 @@ public final class Language: Decodable {
 	public let scopeName: String
 	public var patterns: [Pattern] = []
 
+    var kind: Kind {
+        return Kind(rawValue: "programm.\(name.lowercased())")
+    }
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.uuid = try container.decode(String.self, forKey: .uuid)
@@ -33,6 +37,9 @@ extension Language: SyntaxTreeFactory {
     public func parse(_ text: String) throws -> SyntaxTree {
         let scanner = Scanner(text: text)
         try visit(scanner: scanner)
+        scanner.kind(kind)
+        scanner.annotate(key: "scopeName", value: scopeName)
+        scanner.annotate(key: "language", value: name)
         return scanner.syntaxTree()
     }
 }
