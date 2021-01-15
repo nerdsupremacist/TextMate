@@ -134,7 +134,18 @@ extension Sequence where Element == MutableSyntaxTree {
             let sumOfCharactersInConflicts = conflicts.reduce(0) { $0 + $1.matchedCharacters() }
             if sumOfCharactersInConflicts < tree.matchedCharacters() {
                 results.removeAll { $0.range.overlaps(tree.range) }
+                for conflict in conflicts {
+                    if tree.tryInserting(conflict) {
+                        break
+                    }
+                }
                 results.append(tree)
+            } else {
+                for conflict in conflicts {
+                    if conflict.tryInserting(tree) {
+                        break
+                    }
+                }
             }
         }
 
@@ -142,6 +153,55 @@ extension Sequence where Element == MutableSyntaxTree {
     }
 
 }
+
+extension MutableSyntaxTree {
+
+    @discardableResult
+    func tryInserting(_ other: MutableSyntaxTree) -> Bool {
+        guard range.contains(other.range) else { return false }
+
+        guard other.kind != nil else {
+            var worked = false
+            for child in other.children {
+                worked = worked || tryInserting(child)
+            }
+            return worked
+        }
+
+        if kind == nil, range == other.range {
+            kind = other.kind
+            annotations.merge(other.annotations) { $1 }
+            return true
+        }
+
+        var lastIndex = other.range.lowerBound
+        for childIndex in children.indices {
+            let child = children[childIndex]
+            if (lastIndex..<child.range.lowerBound).contains(other.range) {
+                children.insert(other, at: lastIndex)
+                return true
+            }
+
+            if child.range.contains(other.range) {
+                return child.tryInserting(other)
+            }
+
+            lastIndex = child.range.upperBound
+        }
+
+        return false
+    }
+
+}
+
+extension Range {
+
+    func contains(_ other: Range<Bound>) -> Bool {
+        return lowerBound <= other.lowerBound && upperBound >= other.upperBound
+    }
+
+}
+
 
 extension MutableSyntaxTree {
 
