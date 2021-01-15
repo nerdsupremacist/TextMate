@@ -54,7 +54,7 @@ extension Pattern {
                 let start = beginMatches[current]
                 if let next = next {
                     let nextStart = beginMatches[next]
-                    scanner.begin(in: start.range.upperBound..<nextStart.range.lowerBound)
+                    scanner.begin(in: start.range.upperBound..<nextStart.range.upperBound)
                 } else {
                     scanner.begin(from: start.range.upperBound)
                 }
@@ -113,7 +113,7 @@ extension Pattern {
                 }
 
                 scanner.commit()
-                current += 1
+                current = next.map { $0 + 1 } ?? current + 1
                 next = beginMatches.count > (current + 1) ? current + 1 : nil
             }
 
