@@ -59,7 +59,8 @@ extension Pattern {
                     scanner.begin(from: start.range.upperBound)
                 }
 
-                guard let end = try scanner.first(pattern: wrapped.end) else {
+                let offset = next.map { $0 - current - 1 } ?? 0
+                guard let end = try scanner.first(pattern: wrapped.end, offsetBy: offset) else {
                     scanner.rollback()
 
                     if let actualNext = next, actualNext < beginMatches.count - 1 {

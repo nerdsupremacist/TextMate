@@ -79,9 +79,9 @@ class Scanner {
         return try take(expression: expression)
     }
 
-    func first(pattern: String) throws -> ExpressionMatch? {
+    func first(pattern: String, offsetBy index: Int) throws -> ExpressionMatch? {
         let expression = try self.expression(for: pattern)
-        return try take(expression: expression)
+        return try take(expression: expression, index: index)
     }
 
     func syntaxTree() -> SyntaxTree {
@@ -124,8 +124,10 @@ class Scanner {
             }
     }
 
-    private func take(expression: NSRegularExpression) throws -> ExpressionMatch? {
-        return try take(expression: expression).first
+    private func take(expression: NSRegularExpression, index: Int) throws -> ExpressionMatch? {
+        let matches = try take(expression: expression)
+        guard matches.count > index else { return matches.last }
+        return matches[index]
     }
 
 }
