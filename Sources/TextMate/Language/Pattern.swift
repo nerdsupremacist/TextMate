@@ -113,6 +113,7 @@ extension Pattern {
 
                 scanner.commit()
                 current += 1
+                next = beginMatches.count > (current + 1) ? current + 1 : nil
             }
 
         case .group(let patterns):
