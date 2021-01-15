@@ -116,7 +116,7 @@ class Scanner {
         return matches
             .map { ExpressionMatch(source: text, match: $0) }
             .filter { match in
-                !alreadyOccupied(range: match.range)
+                !match.range.isEmpty && !alreadyOccupied(range: match.range)
             }
     }
 
