@@ -73,6 +73,8 @@ extension Pattern {
                 }
 
                 scanner.rollback()
+                scanner.begin(in: start.range.lowerBound..<end.range.upperBound)
+
                 if let kind = name?.kind {
                     scanner.kind(kind)
                 }
@@ -97,7 +99,6 @@ extension Pattern {
                     try pattern.visit(scanner: scanner)
                 }
                 scanner.commit()
-
 
                 if let endCaptures = wrapped.endCaptures {
                     for (index, capture) in endCaptures {
