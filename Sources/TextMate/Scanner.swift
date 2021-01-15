@@ -135,9 +135,7 @@ extension Sequence where Element == MutableSyntaxTree {
             if sumOfCharactersInConflicts < tree.matchedCharacters() {
                 results.removeAll { $0.range.overlaps(tree.range) }
                 for conflict in conflicts {
-                    if tree.tryInserting(conflict) {
-                        break
-                    }
+                    tree.tryInserting(conflict)
                 }
                 results.append(tree)
             } else {
@@ -189,7 +187,11 @@ extension MutableSyntaxTree {
             lastIndex = child.range.upperBound
         }
 
-        return false
+        var worked = false
+        for child in other.children {
+            worked = worked || tryInserting(child)
+        }
+        return worked
     }
 
 }
