@@ -36,6 +36,10 @@ class Scanner {
     private var storage: Storage
     private var regularExpressions: [String : NSRegularExpression] = [:]
 
+    var range: Range<String.Index> {
+        return storage.range
+    }
+
     init(text: String) {
         self.text = text
         self.lineColumnIndex = LineColumnIndex(string: text)

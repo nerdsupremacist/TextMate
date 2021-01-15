@@ -18,6 +18,7 @@ public final class Pattern {
 extension Pattern {
 
     func visit(scanner: Scanner) throws {
+        guard !scanner.range.isEmpty else { return }
         switch functionality! {
         case .match(let matched):
             let matches = try scanner.all(pattern: matched.match)
@@ -53,7 +54,6 @@ extension Pattern {
                 }
 
                 scanner.rollback()
-                scanner.begin(in: start.range.lowerBound..<end.range.upperBound)
                 if let kind = name?.kind {
                     scanner.kind(kind)
                 }
@@ -69,20 +69,15 @@ extension Pattern {
                     }
                 }
 
+                scanner.begin(in: start.range.upperBound..<end.range.lowerBound)
                 if let contentName = wrapped.contentName {
-                    scanner.begin(in: start.range.upperBound..<end.range.lowerBound)
                     scanner.kind(contentName.kind)
-                    scanner.commit()
-
-                    for pattern in wrapped.patterns ?? [] {
-                        try pattern.visit(scanner: scanner)
-                    }
-                    scanner.commit()
-                } else {
-                    for pattern in wrapped.patterns ?? [] {
-                        try pattern.visit(scanner: scanner)
-                    }
                 }
+
+                for pattern in wrapped.patterns ?? [] {
+                    try pattern.visit(scanner: scanner)
+                }
+                scanner.commit()
 
 
                 if let endCaptures = wrapped.endCaptures {
