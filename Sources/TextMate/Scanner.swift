@@ -70,39 +70,29 @@ class Scanner {
     }
 
     func all(pattern: String) throws -> [ExpressionMatch] {
-        let expression: NSRegularExpression
-        if let stored = regularExpressions[pattern] {
-            expression = stored
-        } else {
-            do {
-                expression = try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines, .allowCommentsAndWhitespace])
-                regularExpressions[pattern] = expression
-            } catch {
-                return []
-            }
-        }
-
+        let expression = try self.expression(for: pattern)
         return try take(expression: expression)
     }
 
     func first(pattern: String) throws -> ExpressionMatch? {
-        let expression: NSRegularExpression
-        if let stored = regularExpressions[pattern] {
-            expression = stored
-        } else {
-            do {
-                expression = try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines, .allowCommentsAndWhitespace])
-                regularExpressions[pattern] = expression
-            } catch {
-                return nil
-            }
-        }
-
+        let expression = try self.expression(for: pattern)
         return try take(expression: expression)
     }
 
     func syntaxTree() -> SyntaxTree {
         return storage.syntaxTree(in: text, with: lineColumnIndex).build()
+    }
+
+    private func expression(for pattern: String) throws -> NSRegularExpression {
+        if let stored = regularExpressions[pattern] {
+            return stored
+        }
+
+        do {
+            return try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines, .allowCommentsAndWhitespace])
+        } catch {
+            return try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines])
+        }
     }
 
     private func take(expression: NSRegularExpression) throws -> [ExpressionMatch] {
