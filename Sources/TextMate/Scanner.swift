@@ -23,7 +23,8 @@ class Scanner {
             let startOffset = text.distance(from: text.startIndex, to: startIndex)
             let endOffset = text.distance(from: text.startIndex, to: endIndex)
 
-            return MutableSyntaxTree(range: startOffset..<endOffset,
+            return MutableSyntaxTree(kind: kind,
+                                     range: startOffset..<endOffset,
                                      location: lineColumnIndex[startOffset]!..<lineColumnIndex[endOffset]!,
                                      annotations: annotations,
                                      children: children)
