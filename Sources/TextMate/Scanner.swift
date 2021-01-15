@@ -93,11 +93,15 @@ class Scanner {
             return stored
         }
 
+        let expression: NSRegularExpression
         do {
-            return try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines, .allowCommentsAndWhitespace])
+            expression = try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines, .allowCommentsAndWhitespace])
         } catch {
-            return try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines])
+            expression = try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines])
         }
+
+        regularExpressions[pattern] = expression
+        return expression
     }
 
     private func alreadyOccupied(range: Range<String.Index>) -> Bool {
