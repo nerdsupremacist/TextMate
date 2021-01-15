@@ -74,8 +74,12 @@ class Scanner {
         if let stored = regularExpressions[pattern] {
             expression = stored
         } else {
-            expression = try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines, .allowCommentsAndWhitespace])
-            regularExpressions[pattern] = expression
+            do {
+                expression = try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines, .allowCommentsAndWhitespace])
+                regularExpressions[pattern] = expression
+            } catch {
+                return []
+            }
         }
 
         return try take(expression: expression)
@@ -86,8 +90,12 @@ class Scanner {
         if let stored = regularExpressions[pattern] {
             expression = stored
         } else {
-            expression = try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines, .allowCommentsAndWhitespace])
-            regularExpressions[pattern] = expression
+            do {
+                expression = try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines, .allowCommentsAndWhitespace])
+                regularExpressions[pattern] = expression
+            } catch {
+                return nil
+            }
         }
 
         return try take(expression: expression)
