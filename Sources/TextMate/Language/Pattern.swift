@@ -31,7 +31,7 @@ extension Pattern {
 
                 if let captures = matched.captures {
                     for (index, capture) in captures {
-                        if let captured = match[Int(index)] {
+                        if let captured = match[Int(index)], !captured.range.isEmpty {
                             scanner.begin(in: captured.range)
                             scanner.kind(capture.name.kind)
                             scanner.annotate(key: "value", value: String(captured.text))
@@ -82,7 +82,7 @@ extension Pattern {
 
                 if let beginCaptures = wrapped.beginCaptures {
                     for (index, capture) in beginCaptures {
-                        if let captured = start[Int(index)] {
+                        if let captured = start[Int(index)], !captured.range.isEmpty {
                             scanner.begin(in: captured.range)
                             scanner.kind(capture.name.kind)
                             scanner.annotate(key: "value", value: String(captured.text))
@@ -103,7 +103,7 @@ extension Pattern {
 
                 if let endCaptures = wrapped.endCaptures {
                     for (index, capture) in endCaptures {
-                        if let captured = end[Int(index)] {
+                        if let captured = end[Int(index)], !captured.range.isEmpty {
                             scanner.begin(in: captured.range)
                             scanner.kind(capture.name.kind)
                             scanner.annotate(key: "value", value: String(captured.text))
