@@ -96,7 +96,9 @@ extension Pattern {
                     scanner.kind(contentName.kind)
                 }
 
-                try scanner.visit(patterns: wrapped.patterns ?? [])
+                for pattern in wrapped.patterns ?? [] {
+                    try pattern.visit(scanner: scanner)
+                }
                 scanner.commit()
 
                 if let endCaptures = wrapped.endCaptures {
@@ -116,7 +118,9 @@ extension Pattern {
             }
 
         case .group(let patterns):
-            try scanner.visit(patterns: patterns)
+            for pattern in patterns {
+                try pattern.visit(scanner: scanner)
+            }
 
         case .grammar(let language):
             try language.visit(scanner: scanner)

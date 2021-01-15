@@ -48,7 +48,9 @@ extension Language {
 
     func visit(scanner: Scanner) throws {
         guard !scanner.range.isEmpty else { return }
-        try scanner.visit(patterns: patterns)
+        for pattern in patterns {
+            try pattern.visit(scanner: scanner)
+        }
     }
 
 }

@@ -9,12 +9,10 @@ class Scanner {
         let parent: Storage?
 
         var children: [MutableSyntaxTree] = []
-        var occupied: [Range<String.Index>]
         var annotations: [String : Encodable] = [:]
 
         init(range: Range<String.Index>, parent: Storage?) {
             self.range = range
-            self.occupied = parent?.occupied ?? []
             self.parent = parent
         }
 
@@ -28,7 +26,7 @@ class Scanner {
                                      range: startOffset..<endOffset,
                                      location: lineColumnIndex[startOffset]!..<lineColumnIndex[endOffset]!,
                                      annotations: annotations,
-                                     children: children.sorted(by: { $0.location.lowerBound < $1.location.lowerBound }))
+                                     children: children.cleanUp())
         }
     }
 
@@ -70,7 +68,6 @@ class Scanner {
 
     func commit() {
         guard let parent = storage.parent else { return }
-        parent.occupied.append(storage.range)
         parent.children.append(storage.syntaxTree(in: text, with: lineColumnIndex))
         storage = parent
     }
@@ -89,34 +86,6 @@ class Scanner {
         return storage.syntaxTree(in: text, with: lineColumnIndex).build()
     }
 
-    func visit(patterns: [Pattern]) throws {
-        var patterns = patterns
-        while let index = try visitLargestStep(from: patterns) {
-            patterns.remove(at: index)
-        }
-    }
-
-    private func visitLargestStep(from patterns: [Pattern]) throws -> Int? {
-        var largestSize = 0
-        var current: (Storage, Int)? = nil
-        for (offset, pattern) in patterns.enumerated() {
-            begin(in: storage.range)
-            try pattern.visit(scanner: self)
-            let size = storage.children.reduce(0) { $0 + $1.matchedCharacters() }
-            if largestSize < size {
-                largestSize = size
-                current = (storage, offset)
-            }
-            rollback()
-        }
-
-        if let current = current {
-            storage = current.0
-            commit()
-        }
-        return current?.1
-    }
-
     private func expression(for pattern: String) throws -> NSRegularExpression {
         if let stored = regularExpressions[pattern] {
             return stored
@@ -133,30 +102,42 @@ class Scanner {
         return expression
     }
 
-    private func alreadyOccupied(range: Range<String.Index>) -> Bool {
-        for occupied in storage.occupied {
-            if occupied.overlaps(range) {
-                return true
-            }
-        }
-
-        return false
-    }
-
     private func take(expression: NSRegularExpression) throws -> [ExpressionMatch] {
         let rangeToLookAt = NSRange(storage.range, in: text)
         let matches = expression.matches(in: text, range: rangeToLookAt)
         return matches
             .map { ExpressionMatch(source: text, match: $0) }
-            .filter { match in
-                !match.range.isEmpty && !alreadyOccupied(range: match.range)
-            }
     }
 
     private func take(expression: NSRegularExpression, index: Int) throws -> ExpressionMatch? {
         let matches = try take(expression: expression)
         guard matches.count > index else { return matches.last }
         return matches[index]
+    }
+
+}
+
+extension Sequence where Element == MutableSyntaxTree {
+
+    func cleanUp() -> [MutableSyntaxTree] {
+        var results = [MutableSyntaxTree]()
+
+        for tree in self {
+            let conflicts = results.filter { $0.range.overlaps(tree.range) }
+            guard !conflicts.isEmpty else {
+                results.append(tree)
+                continue
+            }
+
+            // check that the net gain in characters is worth changing it
+            let sumOfCharactersInConflicts = conflicts.reduce(0) { $0 + $1.matchedCharacters() }
+            if sumOfCharactersInConflicts < tree.matchedCharacters() {
+                results.removeAll { $0.range.overlaps(tree.range) }
+                results.append(tree)
+            }
+        }
+
+        return results.sorted { $0.range.lowerBound < $1.range.lowerBound }
     }
 
 }
@@ -172,3 +153,4 @@ extension MutableSyntaxTree {
     }
 
 }
+
