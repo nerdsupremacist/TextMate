@@ -89,6 +89,34 @@ class Scanner {
         return storage.syntaxTree(in: text, with: lineColumnIndex).build()
     }
 
+    func visit(patterns: [Pattern]) throws {
+        var patterns = patterns
+        while let index = try visitLargestStep(from: patterns) {
+            patterns.remove(at: index)
+        }
+    }
+
+    private func visitLargestStep(from patterns: [Pattern]) throws -> Int? {
+        var largestSize = 0
+        var current: (Storage, Int)? = nil
+        for (offset, pattern) in patterns.enumerated() {
+            begin(in: storage.range)
+            try pattern.visit(scanner: self)
+            let size = storage.children.first.map { $0.range.lowerBound..<storage.children.last!.range.upperBound }?.count ?? 0
+            if largestSize < size {
+                largestSize = size
+                current = (storage, offset)
+            }
+            rollback()
+        }
+
+        if let current = current {
+            storage = current.0
+            commit()
+        }
+        return current?.1
+    }
+
     private func expression(for pattern: String) throws -> NSRegularExpression {
         if let stored = regularExpressions[pattern] {
             return stored
