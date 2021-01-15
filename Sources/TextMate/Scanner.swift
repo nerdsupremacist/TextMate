@@ -27,7 +27,7 @@ class Scanner {
                                      range: startOffset..<endOffset,
                                      location: lineColumnIndex[startOffset]!..<lineColumnIndex[endOffset]!,
                                      annotations: annotations,
-                                     children: children)
+                                     children: children.sorted(by: { $0.location.upperBound < $1.location.lowerBound }))
         }
     }
 
