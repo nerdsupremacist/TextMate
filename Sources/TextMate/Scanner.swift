@@ -98,13 +98,13 @@ class Scanner {
 
     private func take(expression: NSRegularExpression) throws -> [ExpressionMatch] {
         let rangeToLookAt = NSRange(storage.range, in: text)
-        let matches = expression.matches(in: text, options: .anchored, range: rangeToLookAt)
+        let matches = expression.matches(in: text, range: rangeToLookAt)
         return matches.map { ExpressionMatch(source: text, match: $0) }
     }
 
     private func take(expression: NSRegularExpression) throws -> ExpressionMatch? {
         let rangeToLookAt = NSRange(storage.range, in: text)
-        let match = expression.firstMatch(in: text, options: .anchored, range: rangeToLookAt)
+        let match = expression.firstMatch(in: text, range: rangeToLookAt)
         return match.map { ExpressionMatch(source: text, match: $0) }
     }
 
