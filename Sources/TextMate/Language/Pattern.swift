@@ -45,11 +45,30 @@ extension Pattern {
 
         case .wrapped(let wrapped):
             let beginMatches = try scanner.all(pattern: wrapped.begin)
-            for start in beginMatches {
-                scanner.begin(from: start.range.upperBound)
+            guard !beginMatches.isEmpty else { return }
+            
+            var current = 0
+            var next: Int? = beginMatches.count > (current + 1) ? 1 : nil
+
+            while current < beginMatches.count {
+                let start = beginMatches[current]
+                if let next = next {
+                    let nextStart = beginMatches[next]
+                    scanner.begin(in: start.range.upperBound..<nextStart.range.lowerBound)
+                } else {
+                    scanner.begin(from: start.range.upperBound)
+                }
 
                 guard let end = try scanner.first(pattern: wrapped.end) else {
                     scanner.rollback()
+
+                    if let actualNext = next, actualNext < beginMatches.count - 1 {
+                        next = actualNext + 1
+                    } else {
+                        current += 1
+                        next = beginMatches.count > (current + 1) ? current + 1 : nil
+                    }
+
                     continue
                 }
 
