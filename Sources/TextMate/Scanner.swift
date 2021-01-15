@@ -9,11 +9,12 @@ class Scanner {
         let parent: Storage?
 
         var children: [MutableSyntaxTree] = []
-        var occupied: [Range<String.Index>] = []
+        var occupied: [Range<String.Index>]
         var annotations: [String : Encodable] = [:]
 
         init(range: Range<String.Index>, parent: Storage?) {
             self.range = range
+            self.occupied = parent?.occupied ?? []
             self.parent = parent
         }
 
