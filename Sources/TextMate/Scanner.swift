@@ -211,6 +211,10 @@ extension Range {
 extension MutableSyntaxTree {
 
     func matchedCharacters() -> Int {
+        if let kind = kind, kind.rawValue.contains("invalid") {
+            return 0
+        }
+
         if children.isEmpty {
             return range.count
         }
@@ -219,4 +223,3 @@ extension MutableSyntaxTree {
     }
 
 }
-
