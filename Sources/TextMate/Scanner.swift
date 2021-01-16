@@ -112,7 +112,6 @@ class Scanner {
         let matches = expression.matches(in: text, range: rangeToLookAt)
         return matches
             .map { ExpressionMatch(source: text, match: $0) }
-            .filter { !$0.range.isEmpty }
     }
 
     private func take(expression: NSRegularExpression, index: Int) throws -> ExpressionMatch? {
