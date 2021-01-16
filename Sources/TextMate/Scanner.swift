@@ -177,6 +177,10 @@ extension MutableSyntaxTree {
             return true
         }
 
+        if kind == other.kind, range == other.range, children.count == other.children.count {
+            return false
+        }
+
         if children.isEmpty {
             children.append(other)
             return true
