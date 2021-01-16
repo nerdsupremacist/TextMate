@@ -117,7 +117,7 @@ class Scanner {
 
     private func take(expression: NSRegularExpression, index: Int) throws -> ExpressionMatch? {
         let matches = try take(expression: expression)
-        guard matches.count > index else { return matches.last }
+        guard matches.indices.contains(index) else { return nil }
         return matches[index]
     }
 
