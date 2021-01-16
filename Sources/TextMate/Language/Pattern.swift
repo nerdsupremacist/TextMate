@@ -92,9 +92,8 @@ extension Pattern {
                 }
 
                 scanner.begin(in: start.range.upperBound..<end.range.lowerBound)
-                let contentKind = wrapped.contentName?.kind ?? name.map { Kind(rawValue: "\($0.description).content") }
-                if let contentKind = contentKind {
-                    scanner.kind(contentKind)
+                if let contentName = wrapped.contentName {
+                    scanner.kind(contentName.kind)
                 }
 
                 for pattern in wrapped.patterns ?? [] {

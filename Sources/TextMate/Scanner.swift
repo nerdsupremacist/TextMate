@@ -152,7 +152,10 @@ extension Sequence where Element == MutableSyntaxTree {
             }
         }
 
-        return results.sorted { $0.range.lowerBound < $1.range.lowerBound }
+        return results
+            .filter { !$0.range.isEmpty }
+            .filter { $0.kind != nil || !$0.annotations.isEmpty || !$0.children.isEmpty }
+            .sorted { $0.range.lowerBound < $1.range.lowerBound }
     }
 
 }
