@@ -181,7 +181,7 @@ extension MutableSyntaxTree {
         for childIndex in children.indices {
             let child = children[childIndex]
             if (lastIndex..<child.range.lowerBound).contains(other.range) {
-                children.insert(other, at: lastIndex)
+                children.insert(other, at: childIndex)
                 return true
             }
 
