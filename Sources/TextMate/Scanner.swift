@@ -53,8 +53,8 @@ class Scanner {
         storage.annotations[key] = value
     }
 
-    func begin(from range: String.Index) {
-        storage = Storage(range: range..<text.endIndex, parent: storage)
+    func begin(from start: String.Index) {
+        storage = Storage(range: start..<storage.range.upperBound, parent: storage)
     }
 
     func begin(in range: Range<String.Index>) {
