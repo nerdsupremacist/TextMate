@@ -95,7 +95,12 @@ class Scanner {
         do {
             expression = try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines, .allowCommentsAndWhitespace])
         } catch {
-            expression = try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines])
+            do {
+                expression = try NSRegularExpression(pattern: pattern, options: [.anchorsMatchLines])
+            } catch {
+                expression = try NSRegularExpression(pattern: NSRegularExpression.escapedPattern(for: pattern),
+                                                     options: [.anchorsMatchLines])
+            }
         }
 
         regularExpressions[pattern] = expression
