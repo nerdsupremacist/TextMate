@@ -59,7 +59,7 @@ extension Pattern {
                     scanner.begin(from: start.range.upperBound)
                 }
 
-                let offset = next.map { $0 - current - 1 } ?? 0
+                let offset = (next ?? beginMatches.count) - current - 1
                 guard let end = try scanner.first(pattern: wrapped.end, offsetBy: offset) else {
                     scanner.rollback()
 
