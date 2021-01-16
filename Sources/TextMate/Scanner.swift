@@ -49,7 +49,7 @@ class Scanner {
         storage.kind = kind
     }
 
-    func annotate(key: String, value: String) {
+    func annotate(key: String, value: Encodable) {
         storage.annotations[key] = value
     }
 
