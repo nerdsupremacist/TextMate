@@ -181,11 +181,6 @@ extension MutableSyntaxTree {
             return false
         }
 
-        if children.isEmpty {
-            children.append(other)
-            return true
-        }
-
         for child in children {
             if child.range.contains(other.range) {
                 return child.tryInserting(other)
