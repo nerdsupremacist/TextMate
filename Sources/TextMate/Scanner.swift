@@ -210,7 +210,7 @@ extension Range {
 extension MutableSyntaxTree {
 
     func matchedCharacters() -> Int {
-        if let kind = kind, kind.rawValue.contains("invalid") {
+        if isInvalid() {
             return 0
         }
 
@@ -219,6 +219,14 @@ extension MutableSyntaxTree {
         }
 
         return children.reduce(0) { $0 + $1.matchedCharacters() }
+    }
+
+    func isInvalid() -> Bool {
+        if let kind = kind, kind.rawValue.contains("invalid") {
+            return true
+        }
+
+        return children.contains { $0.isInvalid() }
     }
 
 }
