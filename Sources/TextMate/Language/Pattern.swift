@@ -52,10 +52,13 @@ extension Pattern {
 
             while current < beginMatches.count {
                 let start = beginMatches[current]
+                let nextStart: ExpressionMatch?
+
                 if let next = next {
-                    let nextStart = beginMatches[next]
-                    scanner.begin(in: start.range.upperBound..<nextStart.range.upperBound)
+                    nextStart = beginMatches[next]
+                    scanner.begin(in: start.range.upperBound..<nextStart!.range.upperBound)
                 } else {
+                    nextStart = nil
                     scanner.begin(from: start.range.upperBound)
                 }
 
@@ -118,7 +121,11 @@ extension Pattern {
                 }
 
                 scanner.commit()
-                current = next ?? max(current + 1, beginMatches.count - 1)
+                if let nextStart = nextStart, end.range.overlaps(nextStart.range) {
+                    current = next! + 1
+                } else {
+                    current = next ?? max(current + 1, beginMatches.count - 1)
+                }
                 next = beginMatches.count > (current + 1) ? current + 1 : nil
             }
 
