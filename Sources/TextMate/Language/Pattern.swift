@@ -118,7 +118,7 @@ extension Pattern {
                 }
 
                 scanner.commit()
-                current = next.map { $0 + 1 } ?? max(current + 1, beginMatches.count - 1)
+                current = next ?? max(current + 1, beginMatches.count - 1)
                 next = beginMatches.count > (current + 1) ? current + 1 : nil
             }
 
