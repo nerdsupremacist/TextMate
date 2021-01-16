@@ -63,8 +63,12 @@ extension Pattern {
                 guard let end = try scanner.first(pattern: wrapped.end, offsetBy: offset) else {
                     scanner.rollback()
 
-                    if let actualNext = next, actualNext < beginMatches.count - 1 {
-                        next = actualNext + 1
+                    if let actualNext = next {
+                        if actualNext < beginMatches.count - 1 {
+                            next = actualNext + 1
+                        } else {
+                            next = nil
+                        }
                     } else {
                         current += 1
                         next = beginMatches.count > (current + 1) ? current + 1 : nil
@@ -114,7 +118,7 @@ extension Pattern {
                 }
 
                 scanner.commit()
-                current = next.map { $0 + 1 } ?? current + 1
+                current = next.map { $0 + 1 } ?? max(current + 1, beginMatches.count - 1)
                 next = beginMatches.count > (current + 1) ? current + 1 : nil
             }
 
