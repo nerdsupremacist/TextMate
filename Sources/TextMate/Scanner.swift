@@ -177,19 +177,15 @@ extension MutableSyntaxTree {
             return true
         }
 
-        var lastIndex = range.lowerBound
-        for childIndex in children.indices {
-            let child = children[childIndex]
-            if (lastIndex..<child.range.lowerBound).contains(other.range) {
-                children.insert(other, at: childIndex)
-                return true
-            }
+        if children.isEmpty {
+            children.append(other)
+            return true
+        }
 
+        for child in children {
             if child.range.contains(other.range) {
                 return child.tryInserting(other)
             }
-
-            lastIndex = child.range.upperBound
         }
 
         var worked = false
