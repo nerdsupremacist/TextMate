@@ -137,6 +137,7 @@ extension Sequence where Element == MutableSyntaxTree {
         var results = [MutableSyntaxTree]()
 
         for tree in self {
+            guard let tree = tree.cleanUp() else { continue }
             let conflicts = results.filter { $0.range.overlaps(tree.range) }
             guard !conflicts.isEmpty else {
                 results.append(tree)
@@ -217,6 +218,18 @@ extension Range {
 
 
 extension MutableSyntaxTree {
+
+    func cleanUp() -> MutableSyntaxTree? {
+        guard !range.isEmpty else { return nil }
+        guard kind == nil, annotations.isEmpty else { return self }
+        guard !children.isEmpty else { return nil }
+
+        if children.count == 0 {
+            return children[0]
+        } else {
+            return self
+        }
+    }
 
     func matchedCharacters() -> Int {
         if let kind = kind, kind.rawValue.contains("invalid") {
