@@ -54,7 +54,7 @@ class Scanner {
     }
 
     func begin(from start: String.Index) {
-        storage = Storage(range: start..<storage.range.upperBound, parent: storage)
+        storage = Storage(range: start..<text.endIndex, parent: storage)
     }
 
     func begin(in range: Range<String.Index>) {
@@ -112,6 +112,7 @@ class Scanner {
         let matches = expression.matches(in: text, range: rangeToLookAt)
         return matches
             .map { ExpressionMatch(source: text, match: $0) }
+            .filter { storage.range.contains($0.range) }
     }
 
     private func take(expression: NSRegularExpression, index: Int) throws -> ExpressionMatch? {
