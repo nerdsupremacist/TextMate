@@ -6,13 +6,21 @@ class Scanner {
     private class Storage {
         var kind: Kind? = nil
         var range: Range<String.Index>
+        var searchableRange: Range<String.Index>
         let parent: Storage?
 
         var children: [MutableSyntaxTree] = []
         var annotations: [String : Encodable] = [:]
 
+        init(range: Range<String.Index>, searchableRange: Range<String.Index>, parent: Storage?) {
+            self.range = range
+            self.searchableRange = searchableRange
+            self.parent = parent
+        }
+
         init(range: Range<String.Index>, parent: Storage?) {
             self.range = range
+            self.searchableRange = range
             self.parent = parent
         }
 
@@ -54,7 +62,7 @@ class Scanner {
     }
 
     func begin(from start: String.Index) {
-        storage = Storage(range: start..<text.endIndex, parent: storage)
+        storage = Storage(range: start..<storage.range.upperBound, searchableRange: start..<text.endIndex, parent: storage)
     }
 
     func begin(in range: Range<String.Index>) {
@@ -108,7 +116,7 @@ class Scanner {
     }
 
     private func take(expression: NSRegularExpression) throws -> [ExpressionMatch] {
-        let rangeToLookAt = NSRange(storage.range, in: text)
+        let rangeToLookAt = NSRange(storage.searchableRange, in: text)
         let matches = expression.matches(in: text, range: rangeToLookAt)
         return matches
             .map { ExpressionMatch(source: text, match: $0) }
