@@ -224,7 +224,7 @@ extension MutableSyntaxTree {
         guard kind == nil, annotations.isEmpty else { return self }
         guard !children.isEmpty else { return nil }
 
-        if children.count == 0 {
+        if children.count == 1 {
             return children[0]
         } else {
             return self
